@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>RYTHM SPACE - Split Music Player</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg-light: #f0f4f8;
+    --bg-dark: #121212;
+    --text-light: #222;
+    --text-dark: #eee;
+    --accent-color: #1db954;
+    --player-bg-light: #f0f0f3;
+    --player-bg-dark: #1e1e1e;
+    --shadow-light: #bebebe;
+    --shadow-dark: #00000080;
+  }
+  body {
+    margin: 0;
+    font-family: 'Orbitron', sans-serif;
+    background: var(--bg-light);
+    color: var(--text-light);
+    height: 100vh;
+    overflow-x: hidden;
+    transition: background 0.5s ease, color 0.5s ease;
+    user-select: none;
+  }
+  body.dark {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+  }
+  /* Music notes background */
+  body::before {
+    content: "♪ ♫ ♩ ♬ ♭ ♮ ♯";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    font-size: 3rem;
+    color: rgba(29, 185, 84, 0.1);
+    pointer-events: none;
+    user-select: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    gap: 2rem;
+    z-index: -1;
+    animation: floatNotes 20s linear infinite;
+  }
+  body.dark::before {
+    color: rgba(29, 185, 84, 0.15);
+  }
+  @keyframes floatNotes {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+  }
+  /* Header and home screen */
+  #home-screen {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    text-align: center;
+  }
+  .logo {
+    font-size: 6rem;
+    user-select: none;
+  }
+  .title {
+    font-size: 3rem;
+    font-weight: 700;
+    user-select: none;
+  }
+  .start-button {
+    font-weight: 700;
+    font-size: 1.5rem;
+    padding: 1rem 3rem;
+    border: none;
+    border-radius: 30px;
+    background: var(--accent-color);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 8px 15px rgba(29, 185, 84, 0.4);
+    transition: background 0.3s ease;
+    user-select: none;
+  }
+  .start-button:hover {
+    background: #17a44c;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: 2px solid currentColor;
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.3s ease, color 0.3s ease;
+    z-index: 1000;
+  }
+  .theme-toggle:hover {
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+  }
+  /* Music player container */
+  #player-container {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  #player-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    user-select: none;
+  }
+  #player-header .logo {
+    font-size: 3rem;
+  }
+  #player-header .title {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+  .player-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .player {
+    background: var(--player-bg-light);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 8px 8px 15px var(--shadow-light),
+                -8px -8px 15px #ffffff;
+    width: 320px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.5s ease;
+    position: relative;
+  }
+  body.dark .player {
+    background: var(--player-bg-dark);
+    box-shadow: 8px 8px 15px var(--shadow-dark),
+                -8px -8px 15px #2a2a2a;
+  }
+  .player:hover {
+    transform: scale(1.05);
+    box-shadow: 4px 4px 10px var(--shadow-light),
+                -4px -4px 10px #ffffff;
+  }
+  body.dark .player:hover {
+    box-shadow: 4px 4px 10px var(--shadow-dark),
+                -4px -4px 10px #2a2a2a;
+  }
+  .player h2 {
+    margin-bottom: 1rem;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: inherit;
+    text-shadow: none;
+    user-select: text;
+  }
+  input[type="file"] {
+    margin-bottom: 1rem;
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 12px;
+    border: none;
+    background: var(--bg-light);
+    color: #555;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: inset 6px 6px 8px var(--shadow-light),
+                inset -6px -6px 8px #ffffff;
+    transition: background 0.3s ease;
+  }
+  input[type="file"]:hover {
+    background: #d1d9e6;
+  }
+  body.dark input[type="file"] {
+    background: #2a2a2a;
+    color: #ccc;
+    box-shadow: inset 6px 6px 8px #00000080,
+                inset -6px -6px 8px #3a3a3a;
+  }
+  body.dark input[type="file"]:hover {
+    background: #3a3a3a;
+  }
+  audio {
+    width: 100%;
+    outline: none;
+    border-radius: 12px;
+    box-shadow: inset 6px 6px 8px var(--shadow-light),
+                inset -6px -6px 8px #ffffff;
+    margin-bottom: 0.5rem;
+  }
+  body.dark audio {
+    box-shadow: inset 6px 6px 8px #00000080,
+                inset -6px -6px 8px #3a3a3a;
+  }
+  .volume-control {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  button {
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    border: none;
+    background: var(--bg-light);
+    color: var(--text-light);
+    font-weight: 700;
+    box-shadow: 6px 6px 8px var(--shadow-light),
+                -6px -6px 8px #ffffff;
+    transition: background 0.3s ease, color 0.3s ease;
+    user-select: none;
+  }
+  button:hover {
+    background: #d1d9e6;
+  }
+  body.dark button {
+    background: #2a2a2a;
+    color: var(--text-dark);
+    box-shadow: 6px 6px 8px #00000080,
+                -6px -6px 8px #3a3a3a;
+  }
+  body.dark button:hover {
+    background: #3a3a3a;
+  }
+  .description {
+    max-width: 700px;
+    margin: 0 auto 2rem auto;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: inherit;
+    text-shadow: none;
+    user-select: text;
+  }
+  .instructions {
+    max-width: 700px;
+    margin: 0 auto 2rem auto;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: inherit;
+    background: var(--player-bg-light);
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 6px 6px 8px var(--shadow-light),
+                -6px -6px 8px #ffffff;
+    user-select: text;
+    transition: background 0.5s ease, color 0.5s ease;
+  }
+  body.dark .instructions {
+    background: var(--player-bg-dark);
+    box-shadow: 6px 6px 8px var(--shadow-dark),
+                -6px -6px 8px #2a2a2a;
+  }
+  @media (max-width: 768px) {
+    .player-container {
+      flex-direction: column;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    .player {
+      width: 90%;
+      max-width: 400px;
+    }
+    h1 {
+      font-size: 2.5rem;
+    }
+  }
+  /* Audio visualization bars */
+  .visualizer {
+    width: 100%;
+    height: 60px;
+    background: #ccc;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 6px 6px 8px var(--shadow-light),
+                inset -6px -6px 8px #ffffff;
+    margin-bottom: 1rem;
+  }
+  body.dark .visualizer {
+    background: #2a2a2a;
+    box-shadow: inset 6px 6px 8px var(--shadow-dark),
+                inset -6px -6px 8px #3a3a3a;
+  }
+  .bar {
+    height: 100%;
+    width: 3%;
+    background: #555;
+    display: inline-block;
+    margin: 0 1px;
+    transition: background 0.3s ease;
+  }
+  body.dark .bar {
+    background: #bbb;
+  }
+  /* Accessibility focus outline */
+  :focus-visible {
+    outline: 3px solid #007bff;
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+  <button class="theme-toggle" aria-label="Toggle light and dark theme">Toggle Theme</button>
+
+  <div id="home-screen">
+    <div class="logo" aria-hidden="true">🎵</div>
+    <div class="title">RYTHM SPACE</div>
+    <button class="start-button" id="start-btn" aria-label="Start the music player">Start</button>
+  </div>
+
+  <div id="player-container" aria-hidden="true">
+    <div id="player-header">
+      <div class="logo" aria-hidden="true">🎵</div>
+      <div class="title">RYTHM SPACE</div>
+    </div>
+    <div class="player-container">
+      <div class="player" id="player-left">
+        <h2>Left Speaker</h2>
+        <input type="file" id="file-left" accept="audio/*" aria-label="Load audio file for left speaker" />
+        <audio id="audio-left" controls aria-label="Audio player for left speaker"></audio>
+        <input type="range" id="volume-left" class="volume-control" min="0" max="1" step="0.01" value="1" aria-label="Volume control for left speaker" />
+        <div class="visualizer" id="visualizer-left" aria-hidden="true"></div>
+        <div class="track-info" id="track-info-left" aria-live="polite" aria-atomic="true"></div>
+      </div>
+      <div class="player" id="player-right">
+        <h2>Right Speaker</h2>
+        <input type="file" id="file-right" accept="audio/*" aria-label="Load audio file for right speaker" />
+        <audio id="audio-right" controls aria-label="Audio player for right speaker"></audio>
+        <input type="range" id="volume-right" class="volume-control" min="0" max="1" step="0.01" value="1" aria-label="Volume control for right speaker" />
+        <div class="visualizer" id="visualizer-right" aria-hidden="true"></div>
+        <div class="track-info" id="track-info-right" aria-live="polite" aria-atomic="true"></div>
+      </div>
+    </div>
+    <div class="description">
+      <p>Experience immersive audio by playing separate music tracks on your left and right earbuds. Load your favorite songs independently and enjoy a unique split sound experience.</p>
+      <p>Utilizing advanced Web Audio API technology, this player pans audio channels to deliver distinct sounds to each earbud, enhancing your listening pleasure.</p>
+    </div>
+    <div class="instructions" aria-label="Instructions for using the split music player">
+      <h3>How to Use</h3>
+      <ol>
+        <li>Load audio files for the left and right earbuds using the file inputs or drag and drop files onto the player areas.</li>
+        <li>Use the play/pause buttons to control playback. Both players are synchronized for a seamless experience.</li>
+        <li>Adjust the volume sliders independently for each earbud.</li>
+        <li>Toggle between light and dark themes using the button above.</li>
+        <li>Enjoy your personalized split audio experience!</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    const themeToggle = document.querySelector('.theme-toggle');
+    const body = document.body;
+    const homeScreen = document.getElementById('home-screen');
+    const playerContainer = document.getElementById('player-container');
+    const startBtn = document.getElementById('start-btn');
+
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('dark');
+    });
+
+    startBtn.addEventListener('click', () => {
+      homeScreen.style.display = 'none';
+      playerContainer.style.display = 'flex';
+      playerContainer.setAttribute('aria-hidden', 'false');
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const fileLeft = document.getElementById('file-left');
+      const fileRight = document.getElementById('file-right');
+      const audioLeft = document.getElementById('audio-left');
+      const audioRight = document.getElementById('audio-right');
+      const volumeLeft = document.getElementById('volume-left');
+      const volumeRight = document.getElementById('volume-right');
+      const visualizerLeft = document.getElementById('visualizer-left');
+      const visualizerRight = document.getElementById('visualizer-right');
+      const trackInfoLeft = document.getElementById('track-info-left');
+      const trackInfoRight = document.getElementById('track-info-right');
+
+      // Audio context and nodes
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+      const sourceLeft = audioContext.createMediaElementSource(audioLeft);
+      const pannerLeft = audioContext.createStereoPanner();
+      pannerLeft.pan.value = -1; // full left
+      sourceLeft.connect(pannerLeft).connect(audioContext.destination);
+
+      const sourceRight = audioContext.createMediaElementSource(audioRight);
+      const pannerRight = audioContext.createStereoPanner();
+      pannerRight.pan.value = 1; // full right
+      sourceRight.connect(pannerRight).connect(audioContext.destination);
+
+      // Remove synchronization to allow independent play/pause
+      audioLeft.addEventListener('play', () => {
+        if (audioContext.state === 'suspended') {
+          audioContext.resume();
+        }
+      });
+
+      audioRight.addEventListener('play', () => {
+        if (audioContext.state === 'suspended') {
+          audioContext.resume();
+        }
+      });
+
+      audioLeft.addEventListener('pause', () => {
+        // No action to allow independent pause
+      });
+
+      audioRight.addEventListener('pause', () => {
+        // No action to allow independent pause
+      });
+
+      // Load audio file into audio element and update track info
+      function loadAudioFile(inputElement, audioElement, trackInfoElement) {
+        const file = inputElement.files[0];
+        if (file) {
+          const url = URL.createObjectURL(file);
+          audioElement.src = url;
+          audioElement.load();
+          trackInfoElement.textContent = `Loaded: ${file.name}`;
+        }
+      }
+
+      // Update track info with duration when metadata is loaded
+      function updateTrackInfo(audioElement, trackInfoElement, fileName) {
+        audioElement.addEventListener('loadedmetadata', () => {
+          const duration = formatDuration(audioElement.duration);
+          trackInfoElement.textContent = `Loaded: ${fileName} (${duration})`;
+        });
+      }
+
+      // Format duration in seconds to mm:ss
+      function formatDuration(seconds) {
+        if (isNaN(seconds)) return '';
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+      }
+
+      fileLeft.addEventListener('change', () => {
+        loadAudioFile(fileLeft, audioLeft, trackInfoLeft);
+        updateTrackInfo(audioLeft, trackInfoLeft, fileLeft.files[0].name);
+        if (audioContext.state === 'suspended') {
+          audioContext.resume();
+        }
+      });
+
+      fileRight.addEventListener('change', () => {
+        loadAudioFile(fileRight, audioRight, trackInfoRight);
+        updateTrackInfo(audioRight, trackInfoRight, fileRight.files[0].name);
+        if (audioContext.state === 'suspended') {
+          audioContext.resume();
+        }
+      });
+
+      // Volume controls
+      volumeLeft.addEventListener('input', () => {
+        audioLeft.volume = volumeLeft.value;
+      });
+      volumeRight.addEventListener('input', () => {
+        audioRight.volume = volumeRight.value;
+      });
+
+      // Drag and drop support
+      function setupDragAndDrop(playerElement, inputElement) {
+        playerElement.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          playerElement.style.boxShadow = '0 0 15px #007bff';
+        });
+        playerElement.addEventListener('dragleave', (e) => {
+          e.preventDefault();
+          playerElement.style.boxShadow = '';
+        });
+        playerElement.addEventListener('drop', (e) => {
+          e.preventDefault();
+          playerElement.style.boxShadow = '';
+          const files = e.dataTransfer.files;
+          if (files.length > 0) {
+            const file = files[0];
+            if (file.type.startsWith('audio/')) {
+              const dataTransfer = new DataTransfer();
+              dataTransfer.items.add(file);
+              inputElement.files = dataTransfer.files;
+              inputElement.dispatchEvent(new Event('change'));
+            } else {
+              alert('Please drop a valid audio file.');
+            }
+          }
+        });
+      }
+
+      setupDragAndDrop(document.getElementById('player-left'), fileLeft);
+      setupDragAndDrop(document.getElementById('player-right'), fileRight);
+
+      // Audio visualizer setup
+      const analyserLeft = audioContext.createAnalyser();
+      pannerLeft.connect(analyserLeft);
+      analyserLeft.fftSize = 64;
+      const bufferLengthLeft = analyserLeft.frequencyBinCount;
+      const dataArrayLeft = new Uint8Array(bufferLengthLeft);
+
+      const analyserRight = audioContext.createAnalyser();
+      pannerRight.connect(analyserRight);
+      analyserRight.fftSize = 64;
+      const bufferLengthRight = analyserRight.frequencyBinCount;
+      const dataArrayRight = new Uint8Array(bufferLengthRight);
+
+      function createBars(container, count) {
+        for (let i = 0; i < count; i++) {
+          const bar = document.createElement('div');
+          bar.className = 'bar';
+          container.appendChild(bar);
+        }
+      }
+
+      createBars(visualizerLeft, bufferLengthLeft);
+      createBars(visualizerRight, bufferLengthRight);
+
+      const barsLeft = visualizerLeft.getElementsByClassName('bar');
+      const barsRight = visualizerRight.getElementsByClassName('bar');
+
+      function animateVisualizer() {
+        requestAnimationFrame(animateVisualizer);
+
+        analyserLeft.getByteFrequencyData(dataArrayLeft);
+        for (let i = 0; i < bufferLengthLeft; i++) {
+          const barHeight = dataArrayLeft[i] / 2;
+          barsLeft[i].style.height = barHeight + 'px';
+          barsLeft[i].style.backgroundColor = `rgb(${barHeight * 4}, 50, 150)`;
+        }
+
+        analyserRight.getByteFrequencyData(dataArrayRight);
+        for (let i = 0; i < bufferLengthRight; i++) {
+          const barHeight = dataArrayRight[i] / 2;
+          barsRight[i].style.height = barHeight + 'px';
+          barsRight[i].style.backgroundColor = `rgb(50, ${barHeight * 4}, 150)`;
+        }
+      }
+
+      animateVisualizer();
+    });
+  </script>
+</body>
+</html>
