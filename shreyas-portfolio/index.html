@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shreyas B S Portfolio</title>
+  <link rel="stylesheet" href="style.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-papb+X+6Q6X+6Q6X+6Q6X+6Q6X+6Q6X+6Q6X+6Q6X+6Q6X+6Q6X+6Q6X+6Q6X+6Q6X+6Q6X+6Q=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+</head>
+<body>
+  <header>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#resume">Resume</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section id="home" class="section home-section">
+    <div class="photo-container">
+      <img src="abb.png" alt="Shreyas B S" />
+    </div>
+    <div class="about-container">
+      <h1>SHREYAS B S</h1>
+      <h3>A Bit About Me</h3>
+      <p>
+        Hi, I'm a BCA graduate and aspiring professional actively seeking opportunities to grow and contribute in the design space. With a strong foundation in programming, HTML, and Java, I also bring creative skills in UI/UX design that focus on delivering user-friendly digital experiences. My background includes completing the RDC in NCC, which has helped me develop strong leadership, discipline, and time management skills. I take pride in being punctual, responsible, and a team player who thrives in both collaborative and independent environments. While I’m still exploring the right path for my long-term career, I’m passionate about learning, taking on challenges, and making a meaningful impact wherever I go.
+      </p>
+    </div>
+  </section>
+
+  <section id="resume" class="section resume-section">
+    <h2>Resume</h2>
+    <div class="resume-content">
+      <h3>Education</h3>
+      <ul>
+        <li>BCA Graduate</li>
+        <li>RDC in NCC</li>
+      </ul>
+      <h3>Skills</h3>
+      <h4> Technical Skills:</h4>
+      <ul>
+        <li>UI/UX Design – Skilled in creating intuitive and user-centered interfaces for web and mobile applications.</li>
+        <li>HTML & CSS – Proficient in structuring and styling responsive, clean web pages.</li>
+        <li>Java Programming – Experienced in writing object-oriented programs using Java.</li>
+        <li>Basic Web Development – Capable of developing functional and interactive websites.</li>
+        <li>Problem Solving – Able to analyze challenges and implement effective solutions through logical thinking.</li>
+      </ul>
+        <h4>Soft Skill:</h4>  
+        <ul>
+        <li>Leadership – Demonstrated ability to lead teams through NCC and academic projects.</li>
+        <li>Discipline & Punctuality – Known for maintaining consistency, meeting deadlines, and staying organized</li>
+        <li>Team Collaboration – Comfortable working in groups, valuing communication and cooperation.</li>
+        <li>Communication – Clear in conveying ideas and actively listening to others.</li>
+        <li>Time Management – Skilled at prioritizing tasks and managing time effectively.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="projects" class="section projects-section">
+    <h2>Projects</h2>
+    <div class="projects-list">
+      <article class="project-item">
+        <h3>Rythm Space</h3>
+        <p>Rythm Space Player is an innovative audio website designed to enhance the listening experience by allowing users to seamlessly separate and manipulate different audio tracks. Its user-friendly interface and advanced features empower users to enjoy personalized music playback like never before.
+Plays two different audio tracks on separate output channels: Left and Right.
+Designed for shared environments using a single device with multiple outputs (e.g., earbuds or speakers).RYTHM SPACE is a web-based split-channel music player designed to
+provide an innovative and interactive audio experience directly through
+the browser. The project addresses a practical limitation in conventional
+audio playback systems, where both left and right audio channels
+typically play a unified track. In scenarios where two users share the
+same pair of headphones or where individualized audio processing is
+desired, traditional players fall short. RYTHM SPACE fills this gap by
+allowing users to upload two completely different audio files—one
+mapped to the left channel and the other to the right. Each track can be
+controlled independently, with separate playback, volume adjustment, and real-time visualization, offering a personalized and experimental
+form of audio engagement. The motivation behind RYTHM SPACE lies in the growing demand for
+accessible, lightweight tools that offer real-time interactivity without
+relying on backend servers or external installations. With the widespread
+availability of modern web browsers supporting advanced APIs like the
+Web Audio API, it becomes possible to build rich multimedia
+applications using only front-end technologies. RYTHM SPACE was
+conceptualized not just as a technical demonstration but as a practical
+solution for shared headphone usage, creative audio mixing, and
+educational exploration. Users can experiment with spatial sound
+perception, compare musical elements, or simply enjoy two different
+tracks at once with minimal setup. Technically, the application is implemented using HTML5 for semantic
+structure, CSS3 for responsive and themed styling, and JavaScript (ES6+)
+for logic and dynamic interactivity. A key aspect of the project is the use
+of the Web Audio API, which enables complex audio routing and
+manipulation in the browser. Each uploaded audio file is connected to its
+own AudioContext, then routed through a StereoPannerNode to isolate it
+in the left or right channel. AnalyserNodes are also used to capture
+frequency data, which is then used to animate real-time audio
+visualizations. The player features volume sliders for each channel, drag- and-drop file support, and a toggle for switching between light and dark
+themes to improve usability and comfort.
+
+Visit this link to experience the RYTHM SPACE :- https://shreyasbs3121.github.io/TwoPlay/ammu.html
+</p>
+      </article>
+      
+    </div>
+  </section>
+
+  <section id="contact" class="section contact-section">
+    <h2>Contact</h2>
+    <p>Phone: +91 9620984810</p>
+    <p>Email: <a href="mailto:shreyabs29@gmail.com">shreyabs29@gmail.com</a></p>
+    <div class="social-icons">
+      <a href="https://www.linkedin.com/in/shreyasbs" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+      <a href="https://github.com/shreyasbs3121" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+      <a href="https://twitter.com/shreyasbs" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
